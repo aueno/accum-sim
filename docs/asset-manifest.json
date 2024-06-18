@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/accum-sim/static/css/main.c1b28175.css",
-    "main.js": "/accum-sim/static/js/main.9cc0bf16.js",
+    "main.js": "/accum-sim/static/js/main.e684edf3.js",
     "static/js/453.060528d3.chunk.js": "/accum-sim/static/js/453.060528d3.chunk.js",
     "index.html": "/accum-sim/index.html",
     "main.c1b28175.css.map": "/accum-sim/static/css/main.c1b28175.css.map",
-    "main.9cc0bf16.js.map": "/accum-sim/static/js/main.9cc0bf16.js.map",
+    "main.e684edf3.js.map": "/accum-sim/static/js/main.e684edf3.js.map",
     "453.060528d3.chunk.js.map": "/accum-sim/static/js/453.060528d3.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.c1b28175.css",
-    "static/js/main.9cc0bf16.js"
+    "static/js/main.e684edf3.js"
   ]
 }

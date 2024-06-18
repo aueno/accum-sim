@@ -17,7 +17,7 @@ function App() {
         <Nav />
         <div className="flex-grow p-4">
           <Routes>
-            <Route path='/' element={<Calc />} />
+            <Route path='/accum-sim' element={<Calc />} />
             <Route path='/Inv' element={<Inv />} />
           </Routes>
           {chartVisible && <Chart />}
