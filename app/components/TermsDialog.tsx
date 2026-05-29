@@ -107,8 +107,7 @@ export default function TermsDialog() {
         <Button 
           onClick={handleAgree} 
           variant="contained" 
-          color="primary" 
-          autoFocus 
+          color="primary"
           sx={{ borderRadius: 3, px: 4, color: '#fff' }}
         >
           同意する
