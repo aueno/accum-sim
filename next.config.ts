@@ -25,7 +25,7 @@ const nextConfig: NextConfig = {
         ],
       },
       {
-        source: "/sw.js",
+        source: "/accum-sim/sw.js",
         headers: [
           {
             key: "Content-Type",

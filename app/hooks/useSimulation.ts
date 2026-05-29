@@ -64,7 +64,7 @@ export function useSimulation() {
   useEffect(() => {
     // Register PWA service worker
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js')
+      navigator.serviceWorker.register('/accum-sim/sw.js')
         .then((reg) => {
           console.log('Service Worker registered with scope:', reg.scope);
         })
