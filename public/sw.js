@@ -1,10 +1,9 @@
 const CACHE_NAME = 'accum-sim-v1';
 
 const urlsToCache = [
-  '/',
   '/accum-sim/',
-  '/icon-192x192.png',
-  '/icon-512x512.png',
+  '/accum-sim/icon-192x192.png',
+  '/accum-sim/icon-512x512.png',
 ];
 
 // インストール時キャッシュ
