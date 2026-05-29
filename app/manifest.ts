@@ -2,8 +2,8 @@ import type { MetadataRoute } from 'next'
 export const dynamic = "force-static";
 export default function manifest(): MetadataRoute.Manifest {
     return {
-        name: '資産形成シミュレーション',
-        short_name: '資産形成シミュレーション',
+        name: '積立Navi',
+        short_name: '積立Navi',
         description: '資産運用・積立のシミュレーションアプリ',
         start_url: '/accum-sim/',
         scope: "/accum-sim/",
