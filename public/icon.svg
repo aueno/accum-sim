@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0529e1" />
+      <stop offset="100%" stop-color="#1976d2" />
+    </linearGradient>
+    <!-- Coin Gradient -->
+    <linearGradient id="coinGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffd700" />
+      <stop offset="100%" stop-color="#ffa500" />
+    </linearGradient>
+    <!-- Trend Line Gradient -->
+    <linearGradient id="trendGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#00e676" />
+      <stop offset="100%" stop-color="#69f0ae" />
+    </linearGradient>
+    <!-- Shadow filter -->
+    <filter id="dropShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="8" stdDeviation="6" flood-color="#000000" flood-opacity="0.3" />
+    </filter>
+  </defs>
+
+  <!-- Background Base -->
+  <rect width="512" height="512" rx="112" fill="url(#bgGrad)" />
+
+  <!-- Grid Lines in Background -->
+  <g opacity="0.15" stroke="#ffffff" stroke-width="2">
+    <line x1="80" y1="80" x2="80" y2="432" />
+    <line x1="168" y1="80" x2="168" y2="432" />
+    <line x1="256" y1="80" x2="256" y2="432" />
+    <line x1="344" y1="80" x2="344" y2="432" />
+    <line x1="432" y1="80" x2="432" y2="432" />
+    
+    <line x1="80" y1="80" x2="432" y2="80" />
+    <line x1="80" y1="168" x2="432" y2="168" />
+    <line x1="80" y1="256" x2="432" y2="256" />
+    <line x1="80" y1="344" x2="432" y2="344" />
+    <line x1="80" y1="432" x2="432" y2="432" />
+  </g>
+
+  <!-- Glowing Trend Graph Area (Semi-transparent) -->
+  <path d="M 80 432 L 80 340 L 168 280 L 256 220 L 344 140 L 432 80 L 432 432 Z" fill="url(#trendGrad)" opacity="0.15" />
+
+  <!-- Gold Coin in lower left/center -->
+  <g filter="url(#dropShadow)">
+    <circle cx="210" cy="310" r="80" fill="url(#coinGrad)" stroke="#ffffff" stroke-width="4" />
+    <circle cx="210" cy="310" r="60" fill="none" stroke="#ffa500" stroke-width="2" stroke-dasharray="8 4" />
+    
+    <!-- Yen Symbol inside coin -->
+    <path d="M 175 275 L 210 310 M 245 275 L 210 310 M 210 310 L 210 355 M 185 315 L 235 315 M 185 330 L 235 330" 
+          stroke="#ffffff" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" />
+  </g>
+
+  <!-- Rising Arrow / Trend Line -->
+  <g filter="url(#dropShadow)">
+    <path d="M 80 380 Q 180 320 280 200 T 420 100" fill="none" stroke="url(#trendGrad)" stroke-width="16" stroke-linecap="round" />
+    <!-- Arrow Head -->
+    <path d="M 370 100 L 425 95 L 420 150" fill="none" stroke="url(#trendGrad)" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" />
+  </g>
+
+  <!-- Shiny Sparkles -->
+  <path d="M 400 220 L 410 235 L 425 240 L 410 245 L 400 260 L 390 245 L 375 240 L 390 235 Z" fill="#ffffff" opacity="0.8" />
+  <path d="M 120 140 L 125 150 L 135 153 L 125 156 L 120 166 L 115 156 L 105 153 L 115 150 Z" fill="#ffffff" opacity="0.8" />
+</svg>
