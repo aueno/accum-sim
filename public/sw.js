@@ -34,6 +34,13 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const { request } = event;
 
+  if (
+    !request.url.startsWith('http') ||
+    request.url.startsWith('chrome-extension')
+  ) {
+    return;
+  }
+
   // ナビゲーション（ページ）はネット優先＋フォールバック
   if (request.mode === 'navigate') {
     event.respondWith(

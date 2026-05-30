@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Box, Container, Grid, Stack, Snackbar, Alert, Typography } from '@mui/material';
+import { Box, Container, Grid, Stack, Snackbar, Alert, Typography, Button } from '@mui/material';
 import { useSimulation } from './hooks/useSimulation';
 import Header from './components/Header';
 import FooterNavigation from './components/FooterNavigation';
@@ -12,6 +12,8 @@ import ResultChart from './components/ResultChart';
 import ResultTable from './components/ResultTable';
 import HistoryList from './components/HistoryList';
 import TermsDialog from './components/TermsDialog';
+
+import useFCM from "@/app/utils/hooks/useFCM";
 
 export default function HomePage() {
   const {
@@ -51,6 +53,21 @@ export default function HomePage() {
     applyPreset,
   } = useSimulation();
 
+  const { messages, fcmToken } = useFCM();
+
+  const handleRequestNotification = async () => {
+    const permission = await Notification.requestPermission();
+
+    setSnackbar({
+      open: true,
+      message:
+        permission === 'granted'
+          ? '通知を許可しました'
+          : '通知は許可されませんでした',
+      severity: permission === 'granted' ? 'success' : 'error',
+    });
+  };
+
   return (
     <Box
       sx={{
@@ -66,6 +83,17 @@ export default function HomePage() {
         showInstallBtn={showInstallBtn}
         handleInstallClick={handleInstallClick}
       />
+      <p>fcmToken: {fcmToken}</p>
+      <p>messages: {JSON.stringify(messages)}</p>
+      <Button
+        variant="contained"
+        color="primary"
+        sx={{ width: { xs: '100%', sm: 260 } }}
+        onClick={handleRequestNotification}
+      >
+        通知を許可する
+      </Button>
+
 
       {/* Main content container */}
       <Container maxWidth="xl" sx={{ mt: 4, flexGrow: 1 }}>
