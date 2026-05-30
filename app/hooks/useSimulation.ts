@@ -4,6 +4,9 @@ import React, { useState, useEffect } from 'react';
 import { saveHistory, getHistory, deleteHistoryItem, clearHistory, SimulationItem } from '../lib/db';
 
 export function useSimulation() {
+
+  const base = process.env.GITHUB_ACTIONS === "true" ? "/accum-sim" : "";
+
   // Navigation Tab Index (0: Forward Sim, 1: Inverse Sim, 2: History)
   const [tabIndex, setTabIndex] = useState(0);
 
@@ -64,7 +67,7 @@ export function useSimulation() {
   useEffect(() => {
     // Register PWA service worker
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/accum-sim/sw.js')
+      navigator.serviceWorker.register(`${base}/sw.js`)
         .then((reg) => {
           console.log('Service Worker registered with scope:', reg.scope);
         })

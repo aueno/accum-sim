@@ -5,6 +5,8 @@ import ThemeRegistry from './ThemeRegistry';
 import SWRegister from './sw-register';
 import "./globals.css";
 
+const base = process.env.GITHUB_ACTIONS === "true" ? "/accum-sim" : "";
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -18,7 +20,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "積立シミュレーション - 資産運用・逆算シミュレータ (PWA)",
   description: "毎月の積立額から将来の資産額を計算するシミュレーションと、目標金額から必要な積立額・期間・利回りを逆算する高機能なPWA対応シミュレータです。",
-  manifest: "/manifest.webmanifest",
+  manifest: `${base}/manifest.webmanifest`,
   appleWebApp: {
     capable: true,
     title: "積立シミュ",
@@ -26,10 +28,10 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: "/accum-sim/icon-192x192.png", sizes: "192x192", type: "image/png" },
+      { url: `${base}/icon-192x192.png`, sizes: "192x192", type: "image/png" },
     ],
     apple: [
-      { url: "/accum-sim/icon-192x192.png", sizes: "180x180" },
+      { url: `${base}/icon-192x192.png`, sizes: "180x180" },
     ],
   },
 };
