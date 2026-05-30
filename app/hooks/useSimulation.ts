@@ -5,7 +5,7 @@ import { saveHistory, getHistory, deleteHistoryItem, clearHistory, SimulationIte
 
 export function useSimulation() {
 
-  const base = process.env.GITHUB_ACTIONS === "true" ? "/accum-sim" : "";
+  const base = process.env.NEXT_PUBLIC_GITHUB_ACTIONS === "true" ? "/accum-sim" : "";
 
   // Navigation Tab Index (0: Forward Sim, 1: Inverse Sim, 2: History)
   const [tabIndex, setTabIndex] = useState(0);

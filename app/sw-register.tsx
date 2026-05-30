@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 
-const base = process.env.GITHUB_ACTIONS === "true" ? "/accum-sim" : "";
+const base = process.env.NEXT_PUBLIC_GITHUB_ACTIONS === "true" ? "/accum-sim" : "";
 
 export default function SWRegister() {
   useEffect(() => {

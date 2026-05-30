@@ -5,7 +5,7 @@ import ThemeRegistry from './ThemeRegistry';
 import SWRegister from './sw-register';
 import "./globals.css";
 
-const base = process.env.GITHUB_ACTIONS === "true" ? "/accum-sim" : "";
+const base = process.env.NEXT_PUBLIC_GITHUB_ACTIONS === "true" ? "/accum-sim" : "";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
