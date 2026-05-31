@@ -15,41 +15,114 @@ const messaging = firebase.messaging();
 /**
  * バックグラウンド通知
  */
-messaging.onBackgroundMessage((payload) => {
-  console.log("[SW] background message", payload);
+// --- IndexedDB utility（SW用簡易） ---
+function openDB() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open('AccumSimDB', 1);
+
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+
+    req.onupgradeneeded = () => {
+      const db = req.result;
+
+      if (!db.objectStoreNames.contains('notifications')) {
+        db.createObjectStore('notifications', {
+          keyPath: 'id',
+          autoIncrement: true,
+        });
+      }
+    };
+  });
+}
+
+async function saveNotificationToDB(item) {
+  const db = await openDB();
+  const tx = db.transaction('notifications', 'readwrite');
+  const store = tx.objectStore('notifications');
+  store.add(item);
+
+  return new Promise((resolve, reject) => {
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
+  });
+}
+
+
+// --- Push handler ---
+self.addEventListener("push", (event) => {
+  if (!event.data) return;
+
+  const payload = event.data.json();
 
   const title =
-    payload.notification?.title || "通知";
+    payload.notification?.title ||
+    payload.data?.title ||
+    "通知";
 
-  const options = {
-    body: payload.notification?.body || "",
-    icon: "/logo.png",
+  const body =
+    payload.notification?.body ||
+    payload.data?.body ||
+    "";
 
-    tag: payload.data?.tag || "default",
-    renotify: false,
+  const unread = Number(payload.data?.unreadCount || 0);
 
-    data: payload.data || {},
+  const item = {
+    timestamp: Date.now(),
+    title,
+    body,
+    read: false,
+    url: payload.data?.url,
+    tag: payload.data?.tag,
+    unreadCount: unread,
   };
 
-  self.registration.showNotification(title, options);
+  event.waitUntil(
+    (async () => {
+      // ✅ IndexedDB保存
+      await saveNotificationToDB(item);
+
+      // ✅ 通知表示
+      await self.registration.showNotification(title, {
+        body,
+        icon: "/logo.png",
+        tag: item.tag || "default",
+        renotify: false,
+        data: item,
+      });
+
+      // ✅ フロントに通知（リアルタイム更新用）
+      const clientsList = await clients.matchAll({
+        type: "window",
+        includeUncontrolled: true,
+      });
+
+      for (const client of clientsList) {
+        client.postMessage({
+          type: "NEW_NOTIFICATION",
+          payload: item,
+        });
+      }
+    })()
+  );
 });
 
 
+// --- 通知クリック ---
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
 
   const url = event.notification.data?.url || "/accum-sim/";
 
   event.waitUntil(
-    clients.matchAll({ type: "window", includeUncontrolled: true }).then((clientList) => {
-      for (const client of clientList) {
-        if (client.url === url && "focus" in client) {
-          return client.focus();
+    clients.matchAll({ type: "window", includeUncontrolled: true })
+      .then((clientList) => {
+        for (const client of clientList) {
+          if (client.url.includes(url) && "focus" in client) {
+            return client.focus();
+          }
         }
-      }
-      if (clients.openWindow) {
         return clients.openWindow(url);
-      }
-    })
+      })
   );
 });

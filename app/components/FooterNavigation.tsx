@@ -1,20 +1,65 @@
 'use client';
 
-import React from 'react';
-import { Paper, BottomNavigation, BottomNavigationAction } from '@mui/material';
+import { useState, useEffect } from 'react';
+import { Paper, BottomNavigation, BottomNavigationAction, Badge } from '@mui/material';
 import Calculate from '@mui/icons-material/Calculate';
 import TrackChanges from '@mui/icons-material/TrackChanges';
 import History from '@mui/icons-material/History';
+import NotificationsIcon from '@mui/icons-material/Notifications';
 import { useTheme } from '@mui/material/styles';
+import { NotificationItem } from '../lib/db';
 
 interface FooterNavigationProps {
+  notifications: NotificationItem[];
   value: number;
   onChange: (newValue: number) => void;
 }
 
-export default function FooterNavigation({ value, onChange }: FooterNavigationProps) {
+export default function FooterNavigation({ value, onChange, notifications }: FooterNavigationProps) {
   const theme = useTheme();
   const isDark = theme.palette.mode === 'dark';
+
+  // ✅ メインstate
+  const [notificationsState, setNotifications] =
+    useState<NotificationItem[]>(notifications);
+
+  // ✅ props → state同期（重要）
+  useEffect(() => {
+    setNotifications(notifications);
+  }, [notifications]);
+
+  // ✅ SWからリアルタイム受信
+  useEffect(() => {
+    if (!navigator.serviceWorker) return;
+
+    const handler = (event: MessageEvent) => {
+      const data = event.data;
+
+      if (data?.type === 'NEW_NOTIFICATION') {
+        setNotifications((prev) => {
+          // ✅ 重複防止
+          const exists = prev.some(
+            (n) =>
+              n.timestamp === data.payload.timestamp &&
+              n.title === data.payload.title
+          );
+
+          if (exists) return prev;
+
+          return [data.payload, ...prev];
+        });
+      }
+    };
+
+    navigator.serviceWorker.addEventListener('message', handler);
+
+    return () => {
+      navigator.serviceWorker.removeEventListener('message', handler);
+    };
+  }, []);
+
+  // ✅ 未読数
+  const unreadCount = notificationsState.filter((n) => !n.read).length;
 
   return (
     <Paper
@@ -94,7 +139,21 @@ export default function FooterNavigation({ value, onChange }: FooterNavigationPr
           label="履歴一覧"
           icon={<History />}
         />
+        {/* 未読数バッジ */}
+        <BottomNavigationAction
+          label="通知"
+          icon={
+            unreadCount > 0 ? (
+              <Badge badgeContent={unreadCount} color="error">
+                <NotificationsIcon />
+              </Badge>
+            ) : (
+              <NotificationsIcon />
+            )
+          }
+        />
       </BottomNavigation>
+
     </Paper>
   );
 }

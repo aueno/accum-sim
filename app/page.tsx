@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import { useState, useEffect } from 'react';
 import { Box, Container, Grid, Stack, Snackbar, Alert, Typography, Button } from '@mui/material';
 import { useSimulation } from './hooks/useSimulation';
 import Header from './components/Header';
@@ -11,9 +11,18 @@ import ResultCard from './components/ResultCard';
 import ResultChart from './components/ResultChart';
 import ResultTable from './components/ResultTable';
 import HistoryList from './components/HistoryList';
+import PushList from './components/PushList';
 import TermsDialog from './components/TermsDialog';
-
 import useFCM from "@/app/utils/hooks/useFCM";
+
+import {
+  getNotifications,
+  deleteNotificationItem,
+  clearNotifications,
+  markAsRead,
+  NotificationItem,
+} from '@/app/lib/db';
+
 
 export default function HomePage() {
   const {
@@ -68,6 +77,34 @@ export default function HomePage() {
     });
   };
 
+  const [notifications, setNotifications] = useState<NotificationItem[]>([]);
+
+  // ✅ 初期ロード（IndexedDB）
+  useEffect(() => {
+    getNotifications().then(setNotifications);
+  }, [messages.length]);
+
+  // ✅ 個別削除
+  const handleDelete = async (id: number) => {
+    await deleteNotificationItem(id);
+    setNotifications(prev => prev.filter(n => n.id !== id));
+  };
+
+  // ✅ 全削除
+  const handleClearAll = async () => {
+    await clearNotifications();
+    setNotifications([]);
+    setOpenClearDialog(false);
+  };
+
+  // ✅ 既読
+  const handleMarkAsRead = async (id: number) => {
+    await markAsRead(id);
+    setNotifications(prev =>
+      prev.map(n => n.id === id ? { ...n, read: true } : n)
+    );
+  };
+
   return (
     <Box
       sx={{
@@ -103,11 +140,13 @@ export default function HomePage() {
             {tabIndex === 0 && '将来の資産形成をシミュレーション'}
             {tabIndex === 1 && '目標金額から資産計画を逆算'}
             {tabIndex === 2 && 'シミュレーション履歴一覧'}
+            {tabIndex === 3 && '通知'}
           </Typography>
           <Typography variant="body1" color="text.secondary" sx={{ mt: 0.5 }}>
             {tabIndex === 0 && '毎月の積立額、想定利回り、期間を入力して将来の資産額を計算します。'}
             {tabIndex === 1 && '目標金額を達成するために必要な積立額・利回り・期間を逆算します。'}
             {tabIndex === 2 && '過去に計算し保存したシミュレーションを復元・比較できます。'}
+            {tabIndex === 3 && '過去の通知を確認できます。'}
           </Typography>
         </Box>
 
@@ -196,10 +235,22 @@ export default function HomePage() {
             setOpenClearDialog={setOpenClearDialog}
           />
         )}
+
+        {/* Tab 3: Notifications */}
+        {tabIndex === 3 && (
+          <PushList
+            notifications={notifications}
+            onMarkAsRead={handleMarkAsRead}
+            onDeleteItem={handleDelete}
+            onClearAll={handleClearAll}
+            openClearDialog={openClearDialog}
+            setOpenClearDialog={setOpenClearDialog}
+          />
+        )}
       </Container>
 
       {/* Floating Bottom Navigation for PWA style menu */}
-      <FooterNavigation value={tabIndex} onChange={setTabIndex} />
+      <FooterNavigation value={tabIndex} onChange={setTabIndex} notifications={notifications} />
 
       {/* Toast Notification message */}
       <Snackbar

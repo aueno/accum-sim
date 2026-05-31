@@ -18,8 +18,20 @@ export interface SimulationItem {
   };
 }
 
+export interface NotificationItem {
+  id?: number;
+  timestamp: number;
+  title: string;
+  body: string;
+  read: boolean;
+  url?: string;
+  tag?: string;
+  unreadCount?: number;
+}
+
 const DB_NAME = 'AccumSimDB';
 const STORE_NAME = 'history';
+const NOTIFICATION_STORE = 'notifications';
 const DB_VERSION = 1;
 
 export function initDB(): Promise<IDBDatabase> {
@@ -39,10 +51,21 @@ export function initDB(): Promise<IDBDatabase> {
       resolve(request.result);
     };
 
-    request.onupgradeneeded = (event) => {
+    request.onupgradeneeded = () => {
       const db = request.result;
+
       if (!db.objectStoreNames.contains(STORE_NAME)) {
-        db.createObjectStore(STORE_NAME, { keyPath: 'id', autoIncrement: true });
+        db.createObjectStore(STORE_NAME, {
+          keyPath: 'id',
+          autoIncrement: true,
+        });
+      }
+
+      if (!db.objectStoreNames.contains(NOTIFICATION_STORE)) {
+        db.createObjectStore(NOTIFICATION_STORE, {
+          keyPath: 'id',
+          autoIncrement: true,
+        });
       }
     };
   });
@@ -52,7 +75,7 @@ export async function saveHistory(item: SimulationItem): Promise<number> {
   const db = await initDB();
   return new Promise((resolve, reject) => {
     const transaction = db.transaction(STORE_NAME, 'readwrite');
-    const store = transaction.objectStore(transaction.objectStoreNames[0]);
+    const store = transaction.objectStore(STORE_NAME);
     const request = store.add(item);
 
     request.onsuccess = () => {
@@ -116,5 +139,113 @@ export async function clearHistory(): Promise<void> {
     request.onerror = () => {
       reject(request.error);
     };
+  });
+}
+
+export async function saveNotification(item: NotificationItem): Promise<number> {
+  const db = await initDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(NOTIFICATION_STORE, 'readwrite');
+    const store = tx.objectStore(NOTIFICATION_STORE);
+    const request = store.add(item);
+
+    request.onsuccess = () => resolve(request.result as number);
+    request.onerror = () => reject(request.error);
+  });
+}
+
+export async function getNotifications(): Promise<NotificationItem[]> {
+  const db = await initDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(NOTIFICATION_STORE, 'readonly');
+    const store = tx.objectStore(NOTIFICATION_STORE);
+    const request = store.getAll();
+
+    request.onsuccess = () => {
+      const data = request.result as NotificationItem[];
+      data.sort((a, b) => b.timestamp - a.timestamp);
+      resolve(data);
+    };
+
+    request.onerror = () => reject(request.error);
+  });
+}
+
+export async function getUnreadCount(): Promise<number> {
+  const list = await getNotifications();
+  return list.filter(n => !n.read).length;
+}
+
+export async function markAsRead(id: number): Promise<void> {
+  const db = await initDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(NOTIFICATION_STORE, 'readwrite');
+    const store = tx.objectStore(NOTIFICATION_STORE);
+
+    const getReq = store.get(id);
+
+    getReq.onsuccess = () => {
+      const item = getReq.result;
+      if (!item) return resolve();
+
+      item.read = true;
+
+      const putReq = store.put(item);
+
+      putReq.onsuccess = () => resolve();
+      putReq.onerror = () => reject(putReq.error);
+    };
+
+    getReq.onerror = () => reject(getReq.error);
+  });
+}
+
+export async function deleteNotificationItem(id: number): Promise<void> {
+  const db = await initDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(NOTIFICATION_STORE, 'readwrite');
+    const store = tx.objectStore(NOTIFICATION_STORE);
+    const request = store.delete(id);
+
+    request.onsuccess = () => resolve();
+    request.onerror = () => reject(request.error);
+  });
+}
+
+export async function clearNotifications(): Promise<void> {
+  const db = await initDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(NOTIFICATION_STORE, 'readwrite');
+    const store = tx.objectStore(NOTIFICATION_STORE);
+    const request = store.clear();
+
+    request.onsuccess = () => resolve();
+    request.onerror = () => reject(request.error);
+  });
+}
+
+export async function markAllAsRead(): Promise<void> {
+  const db = await initDB();
+
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(NOTIFICATION_STORE, 'readwrite');
+    const store = tx.objectStore(NOTIFICATION_STORE);
+
+    const request = store.openCursor();
+
+    request.onsuccess = (e: any) => {
+      const cursor = e.target.result;
+      if (!cursor) {
+        resolve();
+        return;
+      }
+
+      const item = cursor.value;
+      item.read = true;
+      cursor.update(item);
+      cursor.continue();
+    };
+
+    request.onerror = () => reject(request.error);
   });
 }
