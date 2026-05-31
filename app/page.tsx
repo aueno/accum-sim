@@ -105,6 +105,31 @@ export default function HomePage() {
     );
   };
 
+  // ✅ フォアグラウンド（アプリ起動中）にプッシュ通知を受信した時のトースト処理
+  useEffect(() => {
+    
+    const handleServiceWorkerMessage = (event: MessageEvent) => {
+      if (event.data && event.data.type === 'NEW_NOTIFICATION') {
+        const newNotification = event.data.payload;
+
+        // MUIのSnackbarを使って画面に通知を表示
+        setSnackbar({
+          open: true,
+          message: `📢 ${newNotification.title}: ${newNotification.body}`,
+          severity: 'info',
+        });
+
+        getNotifications().then(setNotifications);
+      }
+    };
+
+    navigator.serviceWorker?.addEventListener('message', handleServiceWorkerMessage);
+
+    return () => {
+      navigator.serviceWorker?.removeEventListener('message', handleServiceWorkerMessage);
+    };
+  }, [setSnackbar]);
+
   return (
     <Box
       sx={{
@@ -120,8 +145,8 @@ export default function HomePage() {
         showInstallBtn={showInstallBtn}
         handleInstallClick={handleInstallClick}
       />
-      <p>fcmToken: {fcmToken}</p>
-      <p>messages: {JSON.stringify(messages)}</p>
+      {/* <p>fcmToken: {fcmToken}</p>
+      <p>messages: {JSON.stringify(messages)}</p> */}
       <Button
         variant="contained"
         color="primary"
