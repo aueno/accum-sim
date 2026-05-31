@@ -31,6 +31,7 @@ import DateRange from '@mui/icons-material/DateRange';
 import LinkIcon from '@mui/icons-material/Link';
 import { useTheme } from '@mui/material/styles';
 import { NotificationItem } from '../lib/db';
+import useFCM from "@/app/utils/hooks/useFCM";
 
 interface NotificationListProps {
   notifications: NotificationItem[];
@@ -52,9 +53,23 @@ export default function NotificationList({
   const theme = useTheme();
   const isDark = theme.palette.mode === 'dark';
 
+  const { fcmToken } = useFCM();
+
   // 通知許可設定
   const { setSnackbar, snackbar } = useSimulation();
+  const [tapCount, setTapCount] = useState(0);
+  const [showToken, setShowToken] = useState(false);
+
   const handleRequestNotification = async () => {
+    const nextCount = tapCount + 1;
+
+    if (nextCount >= 3) {
+      setShowToken(true);
+      setTapCount(0);
+    } else {
+      setTapCount(nextCount);
+    }
+
     const permission = await Notification.requestPermission();
 
     setSnackbar({
@@ -335,6 +350,23 @@ export default function NotificationList({
           {snackbar.message}
         </Alert>
       </Snackbar>
+
+      {showToken && fcmToken && (
+        <Alert severity="info" sx={{ mb: 2 }}>
+          <Typography variant="caption">
+            FCM Token
+          </Typography>
+          <Typography
+            variant="body2"
+            sx={{
+              wordBreak: 'break-all',
+              fontFamily: 'monospace',
+            }}
+          >
+            {fcmToken}
+          </Typography>
+        </Alert>
+      )}
 
       {/* ===== Dialog */}
       <Dialog
