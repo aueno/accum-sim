@@ -55,16 +55,8 @@ self.addEventListener("push", (event) => {
 
   const payload = event.data.json();
 
-  const title =
-    payload.notification?.title ||
-    payload.data?.title ||
-    "通知";
-
-  const body =
-    payload.notification?.body ||
-    payload.data?.body ||
-    "";
-
+  const title = payload.notification?.title || payload.data?.title || "通知";
+  const body = payload.notification?.body || payload.data?.body || "";
   const unread = Number(payload.data?.unreadCount || 0);
 
   const item = {
@@ -79,23 +71,30 @@ self.addEventListener("push", (event) => {
 
   event.waitUntil(
     (async () => {
-      // ✅ IndexedDB保存
-      await saveNotificationToDB(item);
+      // 1. 重い処理（DB保存、通知表示、バッジ設定）を並列で実行して高速化
+      const promises = [
+        // ✅ IndexedDB保存
+        saveNotificationToDB(item),
 
-      // ✅ 通知表示
-      await self.registration.showNotification(title, {
-        body,
-        icon: "/logo.png",
-        tag: item.tag || "default",
-        renotify: false,
-        data: item,
-      });
-
+        // ✅ 通知表示
+        self.registration.showNotification(title, {
+          body,
+          icon: "/logo.png",
+          tag: item.tag || "default",
+          renotify: false,
+          data: item,
+        }),
+      ];
 
       // ✅ iOSバッジ設定
-      await self.registration.setAppBadge(1);
+      if ("setAppBadge" in navigator) {
+        const badgeCount = unread > 0 ? unread : 1;
+        promises.push(navigator.setAppBadge(badgeCount));
+      }
 
-      // ✅ フロントに通知（リアルタイム更新用）
+      await Promise.all(promises);
+
+      // ✅ 2. フロントに通知（リアルタイム更新用）
       const clientsList = await clients.matchAll({
         type: "window",
         includeUncontrolled: true,
@@ -110,7 +109,6 @@ self.addEventListener("push", (event) => {
     })()
   );
 });
-
 
 // --- 通知クリック ---
 self.addEventListener("notificationclick", (event) => {
