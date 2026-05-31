@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Box, Container, Grid, Stack, Snackbar, Alert, Typography, Button } from '@mui/material';
+import { Box, Container, Grid, Stack, Snackbar, Alert, Typography } from '@mui/material';
 import { useSimulation } from './hooks/useSimulation';
 import Header from './components/Header';
 import FooterNavigation from './components/FooterNavigation';
@@ -64,18 +64,6 @@ export default function HomePage() {
 
   const { messages, fcmToken } = useFCM();
 
-  const handleRequestNotification = async () => {
-    const permission = await Notification.requestPermission();
-
-    setSnackbar({
-      open: true,
-      message:
-        permission === 'granted'
-          ? '通知を許可しました'
-          : '通知は許可されませんでした',
-      severity: permission === 'granted' ? 'success' : 'error',
-    });
-  };
 
   const [notifications, setNotifications] = useState<NotificationItem[]>([]);
 
@@ -147,14 +135,6 @@ export default function HomePage() {
       />
       {/* <p>fcmToken: {fcmToken}</p>
       <p>messages: {JSON.stringify(messages)}</p> */}
-      <Button
-        variant="contained"
-        color="primary"
-        sx={{ width: { xs: '100%', sm: 260 } }}
-        onClick={handleRequestNotification}
-      >
-        通知を許可する
-      </Button>
 
 
       {/* Main content container */}

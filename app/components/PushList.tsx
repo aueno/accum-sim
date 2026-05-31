@@ -19,6 +19,7 @@ import {
   DialogActions,
   Badge,
 } from '@mui/material';
+import { useSimulation } from '@/app/hooks/useSimulation';
 import Notifications from '@mui/icons-material/Notifications';
 import Delete from '@mui/icons-material/Delete';
 import Drafts from '@mui/icons-material/Drafts';
@@ -48,6 +49,21 @@ export default function NotificationList({
 }: NotificationListProps) {
   const theme = useTheme();
   const isDark = theme.palette.mode === 'dark';
+
+  // 通知許可設定
+  const { setSnackbar } = useSimulation();
+  const handleRequestNotification = async () => {
+    const permission = await Notification.requestPermission();
+
+    setSnackbar({
+      open: true,
+      message:
+        permission === 'granted'
+          ? '通知を許可しました'
+          : '通知は許可されませんでした',
+      severity: permission === 'granted' ? 'success' : 'error',
+    });
+  };
 
   // ✅ メインstate
   const [notificationsState, setNotifications] =
@@ -90,7 +106,7 @@ export default function NotificationList({
 
   // ✅ 未読数
   const unreadCount = notificationsState.filter((n) => !n.read).length;
-  
+
 
   // ✅ 変化した「未読数」をネイティブバッジに動的反映（追加コード）
   useEffect(() => {
@@ -114,7 +130,16 @@ export default function NotificationList({
   return (
     <Card sx={{ width: '100%', mb: 4 }}>
       <CardContent sx={{ p: { xs: 2.5, sm: 4 } }}>
-        
+
+        <Button
+          variant="contained"
+          color="primary"
+          sx={{ width: { xs: '100%', sm: 260 }, marginBottom: 3 }}
+          onClick={handleRequestNotification}
+        >
+          通知を許可する
+        </Button>
+
         {/* ===== Header ===== */}
         <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
           <Stack direction="row" sx={{ alignItems: 'center', gap: 1.5 }}>
@@ -156,7 +181,7 @@ export default function NotificationList({
           <Grid container spacing={3.5}>
             {notificationsState.map((item) => (
               <Grid size={{ xs: 12, sm: 6, md: 4 }} key={item.id}>
-                
+
                 <Card
                   sx={{
                     height: '100%',
@@ -180,7 +205,7 @@ export default function NotificationList({
                   }}
                 >
                   <CardContent sx={{ p: 3, display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
-                    
+
                     <Box>
                       {/* ===== Top info ===== */}
                       <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
@@ -229,7 +254,7 @@ export default function NotificationList({
 
                     {/* ===== Actions */}
                     <Box sx={{ display: 'flex', gap: 1.5, mt: 'auto', pt: 1.5, borderTop: '1px dashed', borderColor: 'divider' }}>
-                      
+
                       {!item.read && item.id && (
                         <Button
                           fullWidth

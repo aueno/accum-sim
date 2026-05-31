@@ -48,19 +48,6 @@ async function saveNotificationToDB(item) {
   });
 }
 
-async function getUnreadCount() {
-  const db = await openDB();
-  const tx = db.transaction('notifications', 'readonly');
-  const store = tx.objectStore('notifications');
-  const req = store.getAll();
-  req.onsuccess = () => {
-    const notifications = req.result;
-    const unreadCount = notifications.filter((n) => !n.read).length;
-    resolve(unreadCount);
-  };
-  req.onerror = () => reject(req.error);
-}
-
 
 // --- Push handler ---
 self.addEventListener("push", (event) => {
@@ -101,7 +88,7 @@ self.addEventListener("push", (event) => {
 
       // ✅ iOSバッジ設定
       if ("setAppBadge" in navigator) {
-        const badgeCount = await getUnreadCount();
+        const badgeCount = unread > 0 ? unread : 1;
         promises.push(navigator.setAppBadge(badgeCount));
       }
 
