@@ -18,6 +18,8 @@ import {
   DialogContentText,
   DialogActions,
   Badge,
+  Snackbar,
+  Alert,
 } from '@mui/material';
 import { useSimulation } from '@/app/hooks/useSimulation';
 import Notifications from '@mui/icons-material/Notifications';
@@ -51,7 +53,7 @@ export default function NotificationList({
   const isDark = theme.palette.mode === 'dark';
 
   // 通知許可設定
-  const { setSnackbar } = useSimulation();
+  const { setSnackbar, snackbar } = useSimulation();
   const handleRequestNotification = async () => {
     const permission = await Notification.requestPermission();
 
@@ -316,6 +318,23 @@ export default function NotificationList({
           </Grid>
         )}
       </CardContent>
+
+      {/* Toast Notification message */}
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={2000}
+        onClose={() => setSnackbar({ ...snackbar, open: false })}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert
+          onClose={() => setSnackbar({ ...snackbar, open: false })}
+          severity={snackbar.severity || 'info'}
+          variant="filled" //
+          sx={{ width: '100%' }}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
 
       {/* ===== Dialog */}
       <Dialog
