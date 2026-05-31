@@ -93,9 +93,7 @@ self.addEventListener("push", (event) => {
 
 
       // ✅ iOSバッジ設定
-      if ("setAppBadge" in self.registration) {
-        await self.registration.setAppBadge(unread);
-      }
+      await self.registration.setAppBadge(1);
 
       // ✅ フロントに通知（リアルタイム更新用）
       const clientsList = await clients.matchAll({
