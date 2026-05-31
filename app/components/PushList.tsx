@@ -90,6 +90,26 @@ export default function NotificationList({
 
   // ✅ 未読数
   const unreadCount = notificationsState.filter((n) => !n.read).length;
+  
+
+  // ✅ 変化した「未読数」をネイティブバッジに動的反映（追加コード）
+  useEffect(() => {
+    if (!('setAppBadge' in navigator)) return;
+
+    const updateNativeBadge = async () => {
+      try {
+        if (unreadCount > 0) {
+          await navigator.setAppBadge(unreadCount);
+        } else {
+          await navigator.clearAppBadge(); // 未読が0になったらバッジを消去
+        }
+      } catch (error) {
+        console.error("ネイティブバッジの更新に失敗しました:", error);
+      }
+    };
+
+    updateNativeBadge();
+  }, [unreadCount]); // 未読数が変わるたびに自動実行される
 
   return (
     <Card sx={{ width: '100%', mb: 4 }}>
