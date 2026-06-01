@@ -127,7 +127,7 @@ export default function ResultCard({
           <Grid size={{ xs: 6 }}>
             <Box sx={{ bgcolor: 'rgba(255, 255, 255, 0.08)', borderRadius: 3, p: 2 }}>
               <Typography variant="caption" sx={{ opacity: 0.8, display: 'block', mb: 0.5, fontWeight: 'bold' }}>
-                積立元本 (合計)
+                積立元本
               </Typography>
               <Typography variant="h6" sx={{ fontWeight: 800, fontSize: { xs: '1rem', sm: '1.25rem' } }}>
                 {formatYenToManValue(totalPrincipal)}万円
@@ -143,10 +143,10 @@ export default function ResultCard({
                 p: 2,
               }}
             >
-              <Typography variant="caption" sx={{ color: '#f88213', display: 'block', mb: 0.5, fontWeight: 'bold' }}>
-                運用益 (利息分)
+              <Typography variant="caption" sx={{ color: '#fd7a00', display: 'block', mb: 0.5, fontWeight: 'bold' }}>
+                運用益
               </Typography>
-              <Typography variant="h6" sx={{ fontWeight: 800, color: '#f88213', fontSize: { xs: '1rem', sm: '1.25rem' } }}>
+              <Typography variant="h6" sx={{ fontWeight: 800, color: '#fd7a00', fontSize: { xs: '1rem', sm: '1.25rem' } }}>
                 +{formatYenToManValue(totalInterest)}万円
               </Typography>
             </Box>
