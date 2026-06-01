@@ -59,7 +59,7 @@ export default function ResultTable({ yearlyData, tablePage, setTablePage }: Res
                   <TableRow key={row.year} hover>
                     <TableCell align="center" sx={{ fontWeight: 600 }}>{row.year}年目</TableCell>
                     <TableCell align="right">{formatYenToManValue(row.principal)} 万円</TableCell>
-                    <TableCell align="right" sx={{ color: '#00c853', fontWeight: 600 }}>
+                    <TableCell align="right" sx={{ color: '#ee7009', fontWeight: 600 }}>
                       +{formatYenToManValue(row.interest)} 万円
                     </TableCell>
                     <TableCell align="right" sx={{ fontWeight: 'bold' }}>{formatYenToManValue(row.total)} 万円</TableCell>

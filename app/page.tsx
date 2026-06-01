@@ -263,6 +263,7 @@ export default function HomePage() {
         autoHideDuration={4000}
         onClose={() => setSnackbar({ ...snackbar, open: false })}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        sx={{ bottom: { xs: 90, sm: 98 } }}
       >
         <Alert
           onClose={() => setSnackbar({ ...snackbar, open: false })}

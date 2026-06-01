@@ -78,7 +78,7 @@ export default function InverseSimulationForm({
               variant="outlined"
               size="small"
               sx={{
-                color: isDark ? '#69f0ae' : '#00c853',
+                color: isDark ? '#f88213' : '#00c853',
                 borderColor: 'secondary.main',
               }}
             />
@@ -90,7 +90,7 @@ export default function InverseSimulationForm({
               variant="outlined"
               size="small"
               sx={{
-                color: isDark ? '#69f0ae' : '#00c853',
+                color: isDark ? '#f88213' : '#00c853',
                 borderColor: 'secondary.main',
               }}
             />

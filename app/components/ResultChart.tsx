@@ -61,8 +61,8 @@ export default function ResultChart({ yearlyData }: ResultChartProps) {
       {
         label: '運用益',
         data: yearlyData.map((d) => Math.round(d.interest / 1000) / 10), // 万単位
-        backgroundColor: 'rgba(0, 230, 118, 0.7)',
-        borderColor: '#00e676',
+        backgroundColor: 'rgba(230, 169, 0, 0.7)',
+        borderColor: '#e68200',
         borderWidth: 1,
         borderRadius: 4,
         stack: 'Stack 0'

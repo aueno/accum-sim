@@ -340,6 +340,7 @@ export default function NotificationList({
         autoHideDuration={2000}
         onClose={() => setSnackbar({ ...snackbar, open: false })}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        sx={{ bottom: { xs: 90, sm: 98 } }}
       >
         <Alert
           onClose={() => setSnackbar({ ...snackbar, open: false })}
@@ -351,22 +352,24 @@ export default function NotificationList({
         </Alert>
       </Snackbar>
 
-      {showToken && fcmToken && (
-        <Alert severity="info" sx={{ mb: 2 }}>
-          <Typography variant="caption">
-            FCM Token
-          </Typography>
-          <Typography
-            variant="body2"
-            sx={{
-              wordBreak: 'break-all',
-              fontFamily: 'monospace',
-            }}
-          >
-            {fcmToken}
-          </Typography>
-        </Alert>
-      )}
+      {
+        showToken && fcmToken && (
+          <Alert severity="info" sx={{ mb: 2 }}>
+            <Typography variant="caption">
+              FCM Token
+            </Typography>
+            <Typography
+              variant="body2"
+              sx={{
+                wordBreak: 'break-all',
+                fontFamily: 'monospace',
+              }}
+            >
+              {fcmToken}
+            </Typography>
+          </Alert>
+        )
+      }
 
       {/* ===== Dialog */}
       <Dialog
@@ -403,6 +406,6 @@ export default function NotificationList({
           </Button>
         </DialogActions>
       </Dialog>
-    </Card>
+    </Card >
   );
 }

@@ -46,7 +46,7 @@ export default function ThemeRegistry({ children }: { children: React.ReactNode 
             light: mode === 'light' ? '#eef2ff' : '#1e254d',
           },
           secondary: {
-            main: '#00e676',
+            main: '#00a01b',
           },
           background: {
             default: mode === 'light' ? '#f8fafc' : '#070a13',

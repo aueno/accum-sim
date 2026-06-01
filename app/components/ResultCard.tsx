@@ -137,16 +137,16 @@ export default function ResultCard({
           <Grid size={{ xs: 6 }}>
             <Box
               sx={{
-                bgcolor: 'rgba(0, 230, 118, 0.12)',
-                border: '1px solid rgba(0, 230, 118, 0.3)',
+                bgcolor: 'rgba(230, 169, 0, 0.12)',
+                border: '1px solid rgba(230, 157, 0, 0.3)',
                 borderRadius: 3,
                 p: 2,
               }}
             >
-              <Typography variant="caption" sx={{ color: '#69f0ae', display: 'block', mb: 0.5, fontWeight: 'bold' }}>
+              <Typography variant="caption" sx={{ color: '#f88213', display: 'block', mb: 0.5, fontWeight: 'bold' }}>
                 運用益 (利息分)
               </Typography>
-              <Typography variant="h6" sx={{ fontWeight: 800, color: '#69f0ae', fontSize: { xs: '1rem', sm: '1.25rem' } }}>
+              <Typography variant="h6" sx={{ fontWeight: 800, color: '#f88213', fontSize: { xs: '1rem', sm: '1.25rem' } }}>
                 +{formatYenToManValue(totalInterest)}万円
               </Typography>
             </Box>
