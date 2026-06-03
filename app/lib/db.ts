@@ -171,11 +171,6 @@ export async function getNotifications(): Promise<NotificationItem[]> {
   });
 }
 
-export async function getUnreadCount(): Promise<number> {
-  const list = await getNotifications();
-  return list.filter(n => !n.read).length;
-}
-
 export async function markAsRead(id: number): Promise<void> {
   const db = await initDB();
   return new Promise((resolve, reject) => {

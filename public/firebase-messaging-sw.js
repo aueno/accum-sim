@@ -48,6 +48,22 @@ async function saveNotificationToDB(item) {
   });
 }
 
+async function getUnreadCount() {
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction('notifications', 'readonly');
+    const store = tx.objectStore('notifications');
+    const req = store.getAll();
+
+    req.onsuccess = () => {
+      const unread = req.result.filter(n => !n.read).length;
+      resolve(unread);
+    };
+
+    req.onerror = () => reject(req.error);
+  });
+}
+
 
 // --- Push handler ---
 self.addEventListener("push", (event) => {
@@ -71,30 +87,30 @@ self.addEventListener("push", (event) => {
 
   event.waitUntil(
     (async () => {
-      // 1. 重い処理（DB保存、通知表示、バッジ設定）を並列で実行して高速化
-      const promises = [
-        // ✅ IndexedDB保存
-        saveNotificationToDB(item),
+      await saveNotificationToDB(item);
 
-        // ✅ 通知表示
+      const unreadCount = await getUnreadCount();
+
+      const promises = [
         self.registration.showNotification(title, {
           body,
           icon: "/logo.png",
           tag: item.tag || "default",
-          renotify: false,
           data: item,
         }),
       ];
 
-      // ✅ iOSバッジ設定
       if ("setAppBadge" in navigator) {
-        const badgeCount = unread > 0 ? unread : 1;
-        promises.push(navigator.setAppBadge(badgeCount));
+        if (unreadCount > 0) {
+          promises.push(navigator.setAppBadge(unreadCount));
+        } else {
+          promises.push(navigator.clearAppBadge());
+        }
       }
 
       await Promise.all(promises);
 
-      // ✅ 2. フロントに通知（リアルタイム更新用）
+      // クライアント通知
       const clientsList = await clients.matchAll({
         type: "window",
         includeUncontrolled: true,
