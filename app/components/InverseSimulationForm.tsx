@@ -120,14 +120,14 @@ export default function InverseSimulationForm({
             <Slider
               value={inverseTarget}
               min={10}
-              max={10000}
+              max={80000}
               step={10}
               onChange={(e, val) => setInverseTarget(val as number)}
               color="secondary"
             />
             <Stack direction="row" sx={{ justifyContent: 'space-between', mt: -0.5 }}>
               <Typography variant="caption" color="text.secondary">10万円</Typography>
-              <Typography variant="caption" color="text.secondary">1億円 (10,000万円)</Typography>
+              <Typography variant="caption" color="text.secondary">8億円 (80,000万円)</Typography>
             </Stack>
           </Box>
 
