@@ -17,7 +17,7 @@
     "@mui/material-nextjs": "^9.0.1",
     "chart.js": "^4.5.1",
     "firebase": "^12.14.0",
-    "next": "16.2.6",
+    "next": "^16.3.2",
     "react": "19.2.4",
     "react-chartjs-2": "^5.3.1",
     "react-dom": "19.2.4"
