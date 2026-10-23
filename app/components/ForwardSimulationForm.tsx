@@ -82,7 +82,7 @@ export default function ForwardSimulationForm({
               id="outlined-basic-forward-contribution"
               label="毎月の積立額"
               variant="outlined"
-              type="number"
+              type="numeric"
               value={forwardContribution}
               onChange={(e) => setForwardContribution(Math.max(0, parseFloat(e.target.value) || 0))}
               slotProps={{
@@ -113,7 +113,7 @@ export default function ForwardSimulationForm({
               id="outlined-basic-forward-rate"
               label="想定年利 (運用利回り)"
               variant="outlined"
-              type="number"
+              type="numeric"
               value={forwardRate}
               onChange={(e) => setForwardRate(Math.max(0, Math.min(20, parseFloat(e.target.value) || 0)))}
               slotProps={{
@@ -145,7 +145,7 @@ export default function ForwardSimulationForm({
               id="outlined-basic-forward-duration"
               label="積立期間 (運用期間)"
               variant="outlined"
-              type="number"
+              type="numeric"
               value={forwardDuration}
               onChange={(e) => setForwardDuration(Math.max(1, Math.min(50, parseInt(e.target.value) || 1)))}
               slotProps={{
