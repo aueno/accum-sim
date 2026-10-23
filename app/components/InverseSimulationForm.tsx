@@ -106,7 +106,7 @@ export default function InverseSimulationForm({
               id="outlined-basic-inverse-target"
               label="目標設定金額"
               variant="outlined"
-              type="numeric"
+              inputMode="numeric"
               value={inverseTarget}
               onChange={(e) => setInverseTarget(Math.max(0, parseFloat(e.target.value) || 0))}
               slotProps={{
@@ -156,7 +156,7 @@ export default function InverseSimulationForm({
                 id="outlined-basic-inverse-contribution"
                 label="毎月の積立額 (固定)"
                 variant="outlined"
-                type="numeric"
+                inputMode="numeric"
                 value={inverseContribution}
                 onChange={(e) => setInverseContribution(Math.max(0, parseFloat(e.target.value) || 0))}
                 slotProps={{
@@ -188,7 +188,7 @@ export default function InverseSimulationForm({
                 id="outlined-basic-inverse-rate"
                 label="想定年利 (固定)"
                 variant="outlined"
-                type="numeric"
+                inputMode="numeric"
                 value={inverseRate}
                 onChange={(e) => setInverseRate(Math.max(0, Math.min(20, parseFloat(e.target.value) || 0)))}
                 slotProps={{
@@ -221,7 +221,7 @@ export default function InverseSimulationForm({
                 id="outlined-basic-inverse-duration"
                 label="積立期間 (固定)"
                 variant="outlined"
-                type="numeric"
+                inputMode="numeric"
                 value={inverseDuration}
                 onChange={(e) => setInverseDuration(Math.max(1, Math.min(50, parseInt(e.target.value) || 1)))}
                 slotProps={{
