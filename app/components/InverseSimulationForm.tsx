@@ -7,9 +7,7 @@ import {
   CardContent,
   Stack,
   Typography,
-  TextField,
   Slider,
-  InputAdornment,
   Button,
   Chip,
   Divider,
@@ -21,6 +19,7 @@ import {
 import TrackChanges from '@mui/icons-material/TrackChanges';
 import History from '@mui/icons-material/History';
 import { useTheme } from '@mui/material/styles';
+import NumericTextField from './NumericTextField';
 
 interface InverseSimulationFormProps {
   inverseTarget: number;
@@ -100,20 +99,17 @@ export default function InverseSimulationForm({
         <Divider sx={{ my: 2, opacity: 0.5 }} />
 
         <Stack spacing={3}>
-          {/* Target Amount */}
+          {/* Target Amount（整数のみ） */}
           <Box>
-            <TextField
+            <NumericTextField
               id="outlined-basic-inverse-target"
               label="目標設定金額"
               variant="outlined"
-              inputMode="numeric"
               value={inverseTarget}
-              onChange={(e) => setInverseTarget(Math.max(0, parseFloat(e.target.value) || 0))}
-              slotProps={{
-                input: {
-                  endAdornment: <InputAdornment position="end">万円</InputAdornment>,
-                }
-              }}
+              onValueChange={setInverseTarget}
+              min={0}
+              max={80000}
+              unit="万円"
               fullWidth
               sx={{ mb: 1.5 }}
             />
@@ -152,18 +148,16 @@ export default function InverseSimulationForm({
           {/* Variable Inputs depending on selection */}
           {inverseTargetType !== 'monthlyContribution' && (
             <Box>
-              <TextField
+              <NumericTextField
                 id="outlined-basic-inverse-contribution"
                 label="毎月の積立額 (固定)"
                 variant="outlined"
-                inputMode="numeric"
                 value={inverseContribution}
-                onChange={(e) => setInverseContribution(Math.max(0, parseFloat(e.target.value) || 0))}
-                slotProps={{
-                  input: {
-                    endAdornment: <InputAdornment position="end">万円</InputAdornment>,
-                  }
-                }}
+                onValueChange={setInverseContribution}
+                min={0}
+                max={30}
+                allowDecimal
+                unit="万円"
                 fullWidth
                 sx={{ mb: 1.5 }}
               />
@@ -184,19 +178,16 @@ export default function InverseSimulationForm({
 
           {inverseTargetType !== 'annualRate' && (
             <Box>
-              <TextField
+              <NumericTextField
                 id="outlined-basic-inverse-rate"
                 label="想定年利 (固定)"
                 variant="outlined"
-                inputMode="numeric"
                 value={inverseRate}
-                onChange={(e) => setInverseRate(Math.max(0, Math.min(20, parseFloat(e.target.value) || 0)))}
-                slotProps={{
-                  htmlInput: { step: 0.1 },
-                  input: {
-                    endAdornment: <InputAdornment position="end">%</InputAdornment>,
-                  }
-                }}
+                onValueChange={setInverseRate}
+                min={0}
+                max={20}
+                allowDecimal
+                unit="%"
                 fullWidth
                 sx={{ mb: 1.5 }}
               />
@@ -217,18 +208,15 @@ export default function InverseSimulationForm({
 
           {inverseTargetType !== 'durationYears' && (
             <Box>
-              <TextField
+              <NumericTextField
                 id="outlined-basic-inverse-duration"
                 label="積立期間 (固定)"
                 variant="outlined"
-                inputMode="numeric"
                 value={inverseDuration}
-                onChange={(e) => setInverseDuration(Math.max(1, Math.min(50, parseInt(e.target.value) || 1)))}
-                slotProps={{
-                  input: {
-                    endAdornment: <InputAdornment position="end">年</InputAdornment>,
-                  }
-                }}
+                onValueChange={setInverseDuration}
+                min={1}
+                max={50}
+                unit="年"
                 fullWidth
                 sx={{ mb: 1.5 }}
               />

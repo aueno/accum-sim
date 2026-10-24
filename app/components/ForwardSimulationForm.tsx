@@ -7,15 +7,15 @@ import {
   CardContent,
   Stack,
   Typography,
-  TextField,
   Slider,
-  InputAdornment,
   Button,
   Chip,
   Divider,
 } from '@mui/material';
 import Calculate from '@mui/icons-material/Calculate';
 import History from '@mui/icons-material/History';
+import NumericTextField from './NumericTextField';
+
 
 interface ForwardSimulationFormProps {
   forwardContribution: number;
@@ -76,20 +76,18 @@ export default function ForwardSimulationForm({
         <Divider sx={{ my: 2, opacity: 0.5 }} />
 
         <Stack spacing={3}>
-          {/* Monthly Contribution */}
+          {/* Monthly Contribution（小数可） */}
           <Box>
-            <TextField
+            <NumericTextField
               id="outlined-basic-forward-contribution"
               label="毎月の積立額"
               variant="outlined"
-              inputMode="numeric"
               value={forwardContribution}
-              onChange={(e) => setForwardContribution(Math.max(0, parseFloat(e.target.value) || 0))}
-              slotProps={{
-                input: {
-                  endAdornment: <InputAdornment position="end">万円</InputAdornment>,
-                }
-              }}
+              onValueChange={setForwardContribution}
+              min={0}
+              max={30}
+              allowDecimal
+              unit="万円"
               fullWidth
               sx={{ mb: 1.5 }}
             />
@@ -107,21 +105,18 @@ export default function ForwardSimulationForm({
             </Stack>
           </Box>
 
-          {/* Annual Interest Rate */}
+          {/* Annual Interest Rate（小数可） */}
           <Box>
-            <TextField
+            <NumericTextField
               id="outlined-basic-forward-rate"
               label="想定年利 (運用利回り)"
               variant="outlined"
-              inputMode="numeric"
               value={forwardRate}
-              onChange={(e) => setForwardRate(Math.max(0, Math.min(20, parseFloat(e.target.value) || 0)))}
-              slotProps={{
-                htmlInput: { step: 0.1, min: 0, max: 20 },
-                input: {
-                  endAdornment: <InputAdornment position="end">%</InputAdornment>,
-                }
-              }}
+              onValueChange={setForwardRate}
+              min={0}
+              max={20}
+              allowDecimal
+              unit="%"
               fullWidth
               sx={{ mb: 1.5 }}
             />
@@ -139,20 +134,17 @@ export default function ForwardSimulationForm({
             </Stack>
           </Box>
 
-          {/* Duration Years */}
+          {/* Duration Years（整数のみ） */}
           <Box>
-            <TextField
+            <NumericTextField
               id="outlined-basic-forward-duration"
               label="積立期間 (運用期間)"
               variant="outlined"
-              inputMode="numeric"
               value={forwardDuration}
-              onChange={(e) => setForwardDuration(Math.max(1, Math.min(50, parseInt(e.target.value) || 1)))}
-              slotProps={{
-                input: {
-                  endAdornment: <InputAdornment position="end">年</InputAdornment>,
-                }
-              }}
+              onValueChange={setForwardDuration}
+              min={1}
+              max={50}
+              unit="年"
               fullWidth
               sx={{ mb: 1.5 }}
             />
